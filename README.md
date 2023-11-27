@@ -1,4 +1,7 @@
 # workflow-builder
+A Serverless Workflow application to bootstrap SWF projects from Backstage.
+
+![SWF VIZ](./src/main/resources/workflow.svg)
 
 **TBD**
 
