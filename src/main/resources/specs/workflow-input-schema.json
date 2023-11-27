@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-04/schema#",
+  "type": "object",
+  "properties": {
+    "orgName": {
+      "type": "string",
+      "description": "Github organization Name",
+      "title": "Organization Name"
+    },
+    "repoName": {
+      "type": "string",
+      "description": "Github repository name",
+      "title": "Repository Name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description added to the README file",
+      "title": "Description"
+    },
+    "owner": {
+      "type": "string",
+      "description": "Github repository owner (either Group or User)",
+      "title": "Repository Owner"
+    },
+    "system": {
+      "type": "string",
+      "description": "Backstage system",
+      "title": "System"
+    },
+    "groupId": {
+      "type": "string",
+      "description": "Backstage system",
+      "title": "Group ID",
+      "default": "io.janus.workflow",
+      "pattern": "^([a-zA-Z][a-zA-Z0-9]*)([-._][a-zA-Z0-9]+)*$"
+    },
+    "artifactId": {
+      "type": "string",
+      "description": "Maven Artifact ID, also used to generate the default workflow ID",
+      "title": "Artifact ID (also used as workflow id)",
+      "pattern": "^([a-zA-Z][a-zA-Z0-9]*)([-._][a-zA-Z0-9]+)*$"
+    },
+    "version": {
+      "type": "string",
+      "description": "Maven version, also used to tag the generated artifacts",
+      "title": "Project version",
+      "default": "1.0.0-SNAPSHOT"
+    }
+  },
+  "required": [
+    "orgName",
+    "repoName",
+    "owner",
+    "system",
+    "groupId",
+    "artifactId",
+    "version"
+  ]
+}

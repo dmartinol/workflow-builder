@@ -1,0 +1,26 @@
+id: hello
+version: '1.0.0-SNAPSHOT'
+specVersion: '0.8'
+name: Hello
+description: Software template to build Backstage Workflows
+dataInputSchema:
+  failOnValidationErrors: true
+  schema: specs/workflow-input-schema.json
+functions:
+  - name: logInfo
+    type: custom
+    operation: "sysout:INFO"
+start: Publish Repository
+states:
+  - name: Publish Repository
+    id: PublishRepository
+    type: operation
+    actions:
+      - name: printAction
+        functionRef:
+          refName: logInfo
+          arguments:
+            message: '"github.com?owner=" + .orgName + "&repo=" + .repoName'
+        actionDataFilter:
+          toStateData: .getResponse
+    end: true

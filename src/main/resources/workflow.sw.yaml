@@ -1,0 +1,90 @@
+id: workflow-builder
+version: '1.0.0-SNAPSHOT'
+specVersion: '0.8'
+name: Workflow Builder
+description: Software template to build Backstage Workflows
+dataInputSchema:
+  failOnValidationErrors: true
+  schema: specs/workflow-input-schema.json
+functions:
+  - name: fetchTemplate
+    operation: 'specs/actions-openapi.json#fetch:template'
+  - name: publishGithub
+    operation: 'specs/actions-openapi.json#publish:github'
+  - name: catalogRegister
+    operation: 'specs/actions-openapi.json#catalog:register'
+start: Source Code Template
+states:
+  - name: Source Code Template
+    id: SourceCodeTemplate
+    type: operation
+    actions:
+      - id: sourceCodeTemplate
+        name: Generating the Project Source Code
+        functionRef:
+          refName: fetchTemplate
+          arguments:
+            url: https://github.com/dmartinol/workflow-gpt/tree/main/template/skeleton
+            values:
+              orgName: ${ .orgName }
+              repoName: ${ .repoName }
+              owner: ${ .owner }
+              system: ${ .system }
+              description: ${ .description }
+              groupId: ${ .groupId }
+              artifactId: ${ .artifactId }
+              version: ${ .version }
+              sourceControl: github.com
+    transition: Catalog Info Template
+  - name: Catalog Info Template
+    id: CatalogInfoTemplate
+    type: operation
+    actions:
+      - id: catalogInfoTemplate
+        name: Generating the Catalog Info Definition
+        functionRef:
+          refName: fetchTemplate
+          arguments:
+            url: https://github.com/janus-idp/software-templates/tree/main/skeletons/catalog-info/
+            values:
+              orgName: ${ .orgName }
+              repoName: ${ .repoName }
+              owner: ${ .owner }
+              system: ${ .system }
+              applicationType: workflow-project
+              description: ${ .description }
+              sourceControl: github.com
+              lifecycle: development
+    transition: Publish Repository
+  - name: Publish Repository
+    id: PublishRepository
+    type: operation
+    actions:
+      - id: publishRepository
+        name: Publishing the Source Code Repository
+        functionRef:
+          refName: publishGithub
+          arguments:
+            allowedHosts:
+              - github.com
+            description: ${ .description }
+            repoUrl: '"github.com?owner=" + .orgName + "&repo=" + .repoName'
+            defaultBranch: main
+        actionDataFilter:
+          toStateData: .publishOutput
+    transition: Register Component
+  - name: Register Component
+    id: RegisterComponent
+    type: operation
+    actions:
+      - id: registerComponent
+        name: Registering the Catalog Info Component
+        functionRef:
+          refName: catalogRegister
+          arguments:
+            catalogInfoUrl: '.publishOutput.repoContentsUrl + "/catalog-info.yaml"'
+        actionDataFilter:
+          toStateData: .registerOutput
+    stateDataFilter:
+      output: "{\"links\": [{\"title\": \"Open the Source Code Repository\", \"url\": .publishOutput.remoteUrl, \"icon\": \"catalog\"}, {\"title\": \"Open the Catalog Info Component\", \"url\": .registerOutput.entityRef, \"icon\": \"catalog\"}]}"
+    end: true

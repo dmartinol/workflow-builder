@@ -1,0 +1,9 @@
+{
+  "orgName": "dmartinol",
+  "repoName": "test-swf-builder",
+  "owner": "janus-orchestrator",
+  "system": "janus-orchestrator",
+  "groupId": "com.redhat.parodos",
+  "artifactId": "test-swf-builder",
+  "version": "1.0.0-SNAPSHOT"
+}
